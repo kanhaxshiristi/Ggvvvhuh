@@ -423,6 +423,8 @@ def update_key():
         app.logger.error(f"Error updating API key: {e}")
         return jsonify({"error": str(e)}), 500
 
+from time import time
+
 @app.route('/like', methods=['GET'])
 def handle_requests():
     api_key = request.headers.get('X-API-KEY') or request.args.get('key')
@@ -447,6 +449,8 @@ def handle_requests():
         return jsonify({"error": "UID and server_name are required"}), 400
 
     try:
+        start_time = time()  # ⏱ Start timer
+
         def process_request():
             tokens = load_tokens(server_name)
             if tokens is None:
@@ -466,7 +470,6 @@ def handle_requests():
                 data_before = json.loads(jsone)
                 account_info = data_before.get('AccountInfo', {})
                 before_like = int(account_info.get('Likes', 0))
-                player_level = int(account_info.get('Level', 0))
             except Exception as e:
                 raise Exception(f"Error processing before data: {str(e)}")
 
@@ -501,26 +504,27 @@ def handle_requests():
             # Determine status and update key usage
             if like_given > 0:
                 status = 1
-                update_key_usage(api_key, 1)  # Always decrement by 1 when likes are given
+                update_key_usage(api_key, 1)
             else:
                 status = 2
             
-            # Get updated key info
             updated_key_data = authenticate_key(api_key)
             if not updated_key_data:
                 raise Exception("Failed to retrieve updated key info")
-            
+
+            process_time = round(time() - start_time, 2)  # ⏱ End timer, total seconds
+
             response = {
-    "KeyExpiresAt": updated_key_data['expires_at'].isoformat(),
-    "KeyRemainingRequests": f"{updated_key_data['remaining_requests']}/{updated_key_data['total_requests']}",
-    "LikesGivenByAPI": like_given,
-    "LikesafterCommand": after_like,
-    "LikesbeforeCommand": before_like,
-    "PlayerNickname": player_name,
-    "UID": player_uid,
-    "status": status
-}
-            
+                "KeyExpiresAt": updated_key_data['expires_at'].isoformat(),
+                "KeyRemainingRequests": f"{updated_key_data['remaining_requests']}/{updated_key_data['total_requests']}",
+                "LikesGivenByAPI": like_given,
+                "LikesafterCommand": after_like,
+                "LikesbeforeCommand": before_like,
+                "PlayerNickname": player_name,
+                "UID": player_uid,
+                "status": status,
+                "ProcessTimeSeconds": process_time   # ⏱ Added field
+            }
             return response
 
         result = process_request()
