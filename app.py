@@ -511,17 +511,15 @@ def handle_requests():
                 raise Exception("Failed to retrieve updated key info")
             
             response = {
-                "response": {
-                    "KeyExpiresAt": updated_key_data['expires_at'].isoformat(),
-                    "KeyRemainingRequests": f"{updated_key_data['remaining_requests']}/{updated_key_data['total_requests']}",
-                    "LikesGivenByAPI": like_given,
-                    "LikesafterCommand": after_like,
-                    "LikesbeforeCommand": before_like,
-                    "PlayerNickname": player_name,
-                    "UID": player_uid
-                },
-                "status": status
-            }
+    "KeyExpiresAt": updated_key_data['expires_at'].isoformat(),
+    "KeyRemainingRequests": f"{updated_key_data['remaining_requests']}/{updated_key_data['total_requests']}",
+    "LikesGivenByAPI": like_given,
+    "LikesafterCommand": after_like,
+    "LikesbeforeCommand": before_like,
+    "PlayerNickname": player_name,
+    "UID": player_uid,
+    "status": status
+}
             
             return response
 
