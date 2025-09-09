@@ -22,8 +22,7 @@ import atexit
 app = Flask(__name__)
 
 # ✅ Corrected MongoDB connection
-client = MongoClient("mongodb+srv://freefirelive3r4r_db_user:6ZrvflASsY6cgdUJ@cluster0.1jup0hu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
- # database name (you can change it if you like)
+client = MongoClient("mongodb+srv://kanha_healing:Kanhax9x@kanhasoni.5mkodpi.mongodb.net/?retryWrites=true&w=majority&appName=Kanhasoni")
 
 # ✅ Replace 'yourdb' with actual database name (choose your own)
 db = client["garenafreefire"]  # You can name it whatever you like
